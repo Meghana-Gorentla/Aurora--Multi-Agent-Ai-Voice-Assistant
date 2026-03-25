@@ -75,38 +75,39 @@ These are selected automatically during runtime.
 
 ---
 
+
 ## Architecture (single combined flow)
 
 ```mermaid
 flowchart TD
   U[User] --> UI[Frontend UI]
 
-  UI -->|Text| TXT[POST /chat]
-  UI -->|Voice| AUD[POST /chat_audio/ (audio upload)]
+  UI -->|Text| TXT["POST /chat"]
+  UI -->|Voice| AUD["POST /chat_audio (audio upload)"]
 
-  TXT --> API[FastAPI chat endpoint]
-  AUD --> API[FastAPI chat_audio endpoint]
+  TXT --> API["FastAPI chat endpoint"]
+  AUD --> API["FastAPI chat_audio endpoint"]
 
   API --> MOD[Moderation]
-  API --> LOG[Log to SQLite (chat_log)]
+  API --> LOG["Log to SQLite chat_log"]
 
-  API --> MGR[ManagerAgent.run()]
-  MGR --> CLF[classifier_agent (outputs domain keyword(s))]
+  API --> MGR["ManagerAgent.run()"]
+  MGR --> CLF["classifier_agent → domain keywords"]
 
   CLF --> MGR
 
-  MGR -->|1 domain| EXP[Select domain expert agent]
-  MGR -->|many domains| SYN[Synthesize across experts]
+  MGR -->|1 domain| EXP["Select domain expert"]
+  MGR -->|many domains| SYN["Synthesize experts"]
 
-  EXP --> OUT[Assistant response text]
+  EXP --> OUT["Assistant response text"]
   SYN --> OUT
 
-  OUT --> TTS[Edge TTS (persona selected by domain)]
-  TTS --> RET[Return: response + audio_base64]
+  OUT --> TTS["Edge TTS (voice by domain)"]
+  TTS --> RET["Return response + audio_base64"]
 
-  AUD --> STT[STT transcription]
+  AUD --> STT["Speech-to-Text"]
   STT --> API
-  API --> RET2[Return: transcription]
+  API --> RET2["Return transcription"]
 
   RET --> U
   RET2 --> U
