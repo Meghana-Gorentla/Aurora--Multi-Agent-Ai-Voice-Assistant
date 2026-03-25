@@ -1,73 +1,98 @@
 # Aurora — Multi-Agent AI Voice Assistant (Agno + FastAPI)
 
-Aurora is a multi-personality AI voice assistant built with the Agno framework and served with FastAPI.
-It dynamically routes each request to the correct domain expert agent at runtime and supports both text and voice interaction.
+## Overview
 
-This project demonstrates multi-agent orchestration, domain-aware routing, and emotion-aware conversational responses.
+Aurora is a multi-personality AI voice assistant built using the Agno framework and served through FastAPI.  
+The assistant automatically understands the user's intent and responds using the most suitable conversational style, allowing natural interaction across multiple domains.
+
+Aurora supports both text and voice interaction, maintains conversation history, and adapts its response style depending on the type of query.
+
+The system is designed to simulate conversations with different types of assistants such as a tutor, therapist, healthcare assistant, or finance helper, while keeping the experience seamless for the user.
 
 ---
 
-## Paper
+## Application Features
+
+- Text chat support through API
+- Voice input with automatic speech-to-text
+- Voice responses using text-to-speech
+- Automatic understanding of user intent
+- Context-aware replies across multiple domains
+- Emotion-aware conversational responses
+- Session history stored for each user
+- Simple web UI for interaction
+- FastAPI backend with real-time responses
+- SQLite database for chat history
+
+Users can ask questions normally without selecting any mode manually.
+
+---
+
+## Voice Interaction Flow
+
+Audio input  
+→ Speech-to-Text  
+→ Intent detection  
+→ Expert response  
+→ Text-to-Speech  
+→ Audio reply
+
+The system automatically selects the correct response style.
+
+---
+
+## Reference Paper
+
+This project is based on the published research work:
 
 Aurora: A Multi-Personality AI Voice Assistant for Domain-Specific and Emotion-Aware Interactions  
 IEEE Xplore: https://ieeexplore.ieee.org/document/11294651
 
 ---
 
-## Features
+## System Behavior
 
-- Agno multi-agent orchestration
-- Domain classifier agent
-- Manager / Orchestrator agent
-- 4 domain experts
-- General fallback agent
-- Therapist hierarchical routing
-- Voice pipeline (audio → STT → moderation → response → TTS)
-- FastAPI backend
-- SQLite storage
-- Persona-based TTS
+Aurora dynamically detects the type of query and responds accordingly.
 
----
+Possible response styles include:
 
-## Domains
+- Healthcare assistant
+- Tutor / educational helper
+- Therapist / emotional support
+- Finance assistant
+- General conversation
 
-healthcare → Urog  
-tutor → Ravith  
-therapist → Ojas  
-finance → Artha  
-general → fallback  
+The user does not need to select any mode manually.  
+Aurora automatically decides how to respond.
 
-Therapist agent uses internal sub-routing.
+For emotional conversations, the assistant may respond using different therapeutic styles such as:
+
+- Emotional support
+- Reflective dialogue
+- Cognitive restructuring
+
+These are selected automatically during runtime.
 
 ---
 
-## Architecture
+## Architecture (High Level)
 
 ```mermaid
 flowchart TD
-  U[User] --> API[FastAPI: /chat or /chat_audio]
-  API --> MOD[Moderation]
-  API --> MGR[ManagerAgent.run()]
-
-  MGR --> CLF[Classifier Agent]
-  CLF --> MGR
-
-  MGR -->|single domain| EXP[Expert Agent]
-  MGR -->|multi domain| SYN[Synthesis]
-
-  EXP --> OUT[Response Text]
-
-  OUT --> TTS[Edge TTS]
-  TTS --> RET[Return text + audio + transcription]
-
-  RET --> U
+  U[User] --> API[FastAPI]
+  API --> STT[Speech to Text]
+  API --> ROUTE[Intent Detection]
+  ROUTE --> RESP[Response Generator]
+  RESP --> TTS[Text to Speech]
+  TTS --> OUT[Return text + audio]
+  OUT --> U
 ```
 
 ---
 
 ## Setup
 
-Clone repo
+Clone repository
 
 ```
 git clone <your_repo_url>
@@ -80,7 +105,7 @@ Create virtual environment
 python -m venv venv
 ```
 
-Activate virtual environment
+Activate environment
 
 Windows
 
@@ -106,15 +131,15 @@ Create .env file in project root
 multi-agent-assistant/.env
 ```
 
-Add API key inside .env
+Add API key
 
 ```
 GROQ_API_KEY=your_key_here
 ```
 
-IMPORTANT
+Important
 
-- Do NOT commit .env
+- Do not commit .env
 - Add .env to .gitignore
 
 Example .gitignore
@@ -145,7 +170,6 @@ http://127.0.0.1:8000
 ## API Endpoints
 
 POST /chat  
-POST /chat/  
 POST /chat_audio/  
 GET /sessions/{user_id}  
 GET /sessions/{user_id}/{session_id}/history  
@@ -153,50 +177,21 @@ PUT /sessions/{user_id}/{session_id}/name
 
 ---
 
-## Data / Files
+## Data Storage
 
-SQLite database
+Session history is stored in SQLite.
 
 ```
 tmp/agent.db
 ```
 
-Temporary audio
+Temporary audio files
 
 ```
 tmp/audio/
 ```
 
-These are created automatically.
-
----
-
-## Domain Routing
-
-Domains detected dynamically using classifier output
-
-```
-healthcare
-tutor
-therapist
-finance
-general
-```
-
-Therapist agent performs internal sub-classification without fine-tuning.
-
----
-
-## Voice Pipeline
-
-audio upload  
-→ speech to text  
-→ moderation  
-→ manager agent  
-→ expert agent  
-→ text response  
-→ text to speech  
-→ return text + audio + transcription
+These files are created automatically.
 
 ---
 
@@ -205,8 +200,8 @@ audio upload
 - API keys stored in .env
 - Do not push secrets to GitHub
 - SQLite used for local development
-- Audio stored temporarily
-
+- Audio files stored temporarily
+- 
 ---
 
 ## Author
