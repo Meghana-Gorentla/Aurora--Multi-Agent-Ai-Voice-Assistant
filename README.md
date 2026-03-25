@@ -75,17 +75,41 @@ These are selected automatically during runtime.
 
 ---
 
-## Architecture (High Level)
+## Architecture (single combined flow)
 
 ```mermaid
 flowchart TD
-  U[User] --> API[FastAPI]
-  API --> STT[Speech to Text]
-  API --> ROUTE[Intent Detection]
-  ROUTE --> RESP[Response Generator]
-  RESP --> TTS[Text to Speech]
-  TTS --> OUT[Return text + audio]
-  OUT --> U
+  U[User] --> UI[Frontend UI]
+
+  UI -->|Text| TXT[POST /chat]
+  UI -->|Voice| AUD[POST /chat_audio/ (audio upload)]
+
+  TXT --> API[FastAPI chat endpoint]
+  AUD --> API[FastAPI chat_audio endpoint]
+
+  API --> MOD[Moderation]
+  API --> LOG[Log to SQLite (chat_log)]
+
+  API --> MGR[ManagerAgent.run()]
+  MGR --> CLF[classifier_agent (outputs domain keyword(s))]
+
+  CLF --> MGR
+
+  MGR -->|1 domain| EXP[Select domain expert agent]
+  MGR -->|many domains| SYN[Synthesize across experts]
+
+  EXP --> OUT[Assistant response text]
+  SYN --> OUT
+
+  OUT --> TTS[Edge TTS (persona selected by domain)]
+  TTS --> RET[Return: response + audio_base64]
+
+  AUD --> STT[STT transcription]
+  STT --> API
+  API --> RET2[Return: transcription]
+
+  RET --> U
+  RET2 --> U
 ```
 
 ---
@@ -201,7 +225,6 @@ These files are created automatically.
 - Do not push secrets to GitHub
 - SQLite used for local development
 - Audio files stored temporarily
-- 
 ---
 
 ## Author
