@@ -1,0 +1,25 @@
+# requirements.txt
+# Original versions from your previous working environment.
+# Note: pydantic>=2.5.0 for Python 3.13 (2.5.0 has no pre-built wheels on 3.13)
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic>=2.5.0,<3
+agno
+sqlalchemy
+openai>=1.0.0
+python-multipart==0.0.6
+python-jose==3.3.0
+passlib==1.7.4
+groq
+
+
+faster-whisper
+aiofiles
+jinja2
+elevenlabs
+edge-tts
+python-dotenv
+#prometheus-fastapi-instrumentator 
+#transformers
+torch
+#playsound

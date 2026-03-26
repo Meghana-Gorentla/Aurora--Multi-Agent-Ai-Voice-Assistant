@@ -1,0 +1,73 @@
+# ========================
+# Python and FastAPI setup
+# ========================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# ========================
+# Virtual Environments
+# ========================
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ========================
+# Temporary & cache files
+# ========================
+tmp/
+*.db
+*.sqlite3
+audio/
+*.log
+
+# ========================
+# Configuration & Secrets
+# ========================
+.env
+*.ini
+*.cfg
+*.toml
+
+# ========================
+# FastAPI specific
+# ========================
+*.pid
+*.lock
+
+# ========================
+# Editor / IDE settings
+# ========================
+.vscode/
+.idea/
+*.swp
+
+# ========================
+# MacOS / Windows / Linux
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# Node / Frontend builds (if using JS in frontend)
+# ========================
+node_modules/
+dist/
+build/
+package-lock.json
+
+# ========================
+# Whisper / ElevenLabs / Torch cache
+# ========================
+.whisper/
+whisper_cache/
+model_cache/
+*.pt
+*.bin
